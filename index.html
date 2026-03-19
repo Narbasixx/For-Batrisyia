@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>For Batrisyia ❤️</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Poppins', sans-serif; background: #0f172a; overflow: hidden; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+    .main-bg { position: fixed; inset: 0; background: linear-gradient(-45deg, #f472b6, #9333ea, #3b82f6); background-size: 400% 400%; animation: grad 8s ease infinite; z-index: -1; }
+    @keyframes grad { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+    .glass-card { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 40px; padding: 3.5rem 2rem; text-align: center; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); max-width: 400px; width: 90%; position: relative; }
+    .font-sweet { font-family: 'Pacifico', cursive; }
+    #no-btn { transition: all 0.2s ease; position: absolute; white-space: nowrap; }
+    .heart-bg { position: absolute; font-size: 20px; animation: fall 5s linear infinite; opacity: 0.5; pointer-events: none; }
+    @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
+    .hidden-trap { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="main-bg"></div>
+  <audio id="music" loop></audio>
+
+  <div class="glass-card" id="card">
+    <h1 id="title" class="text-4xl font-sweet text-white mb-6 drop-shadow-lg"></h1>
+    <p id="msg" class="text-white text-xl mb-12 font-light leading-relaxed"></p>
+    
+    <div id="controls" class="flex flex-col gap-4 items-center justify-center relative min-h-[150px]">
+        <button id="yes-btn" onclick="handleYes()" class="w-full bg-white text-pink-600 font-bold py-4 rounded-2xl shadow-xl hover:scale-105 active:scale-95 transition-all z-20 text-lg hidden-trap">
+            Yes! ❤️
+        </button>
+        <button id="no-btn" onmouseover="moveNo()" onclick="moveNo()" class="bg-white/20 text-white/80 px-8 py-2 rounded-xl text-sm z-10 border border-white/10">
+            No
+        </button>
+    </div>
+  </div>
+
+  <script src="config.js"></script>
+  <script>
+    let step = 0;
+    let noCount = 0;
+    const audio = document.getElementById('music');
+    
+    // Heart background animation
+    setInterval(() => {
+      const h = document.createElement('div');
+      h.innerHTML = '❤️';
+      h.className = 'heart-bg';
+      h.style.left = Math.random() * 100 + 'vw';
+      h.style.top = '-50px';
+      h.style.animationDuration = (Math.random() * 2 + 3) + 's';
+      document.body.appendChild(h);
+      setTimeout(() => h.remove(), 5000);
+    }, 400);
+
+    function render() {
+      const s = CONFIG.sections[step];
+      document.getElementById('title').innerText = s.title || "Happy Birthday!";
+      document.getElementById('msg').innerText = s.text || s.subtitle || s.message || "";
+      
+      const yesBtn = document.getElementById('yes-btn');
+      const noBtn = document.getElementById('no-btn');
+      
+      if (s.type === "love-trap") {
+        yesBtn.classList.add('hidden-trap');
+        noBtn.style.display = 'block';
+        noBtn.style.transform = "translate(0, 0)";
+        noBtn.style.top = "40px"; 
+      } else {
+        noBtn.style.display = 'none';
+        yesBtn.classList.remove('hidden-trap');
+        yesBtn.innerText = s.buttonText || "Next ❤️";
+      }
+    }
+
+    function moveNo() {
+      const btn = document.getElementById('no-btn');
+      const yesBtn = document.getElementById('yes-btn');
+      noCount++;
+      
+      // TRIGGER AT 10 TIMES
+      if (noCount >= 10) {
+        btn.style.display = 'none'; 
+        yesBtn.classList.remove('hidden-trap'); 
+        return;
+      }
+
+      const x = Math.random() * 200 - 100;
+      const y = Math.random() * 100 - 50;
+      btn.style.transform = `translate(${x}px, ${y}px)`;
+    }
+
+    function handleYes() {
+      if (step === 0) {
+        audio.src = CONFIG.music;
+        audio.play().catch(e => console.log("Audio play failed"));
+        confetti({ particleCount: 200, spread: 80, origin: { y: 0.6 } });
+      }
+      
+      step++;
+      if (step >= CONFIG.sections.length) step = 0;
+      render();
+    }
+
+    window.onload = render;
+  </script>
+</body>
+</html>
