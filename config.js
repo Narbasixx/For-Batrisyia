@@ -16,7 +16,7 @@ const CONFIG = {
     {
       type: "love-trap",
       title: "Wait, before we start...",
-      text: "Do you know how much I love you? ❤️",
+      text: "Do you love me sayang ? ❤️",
     },
     {
       type: "greeting",
